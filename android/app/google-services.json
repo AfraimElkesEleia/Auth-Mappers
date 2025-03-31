@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "204572132227",
+    "project_id": "auth-mappers",
+    "storage_bucket": "auth-mappers.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204572132227:android:c67c7884c684eeb1232cb6",
+        "android_client_info": {
+          "package_name": "com.example.auth_mappers"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz652eeHl8GHTjEocAMvvNHq_HU8vfN1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
