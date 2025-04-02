@@ -1,10 +1,14 @@
+import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_cubit.dart';
 import 'package:auth_mappers/constants/colors.dart';
+import 'package:auth_mappers/constants/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OtpScreen extends StatelessWidget {
-  //final String phoneNumber;
-  const OtpScreen({super.key});
+  final String phoneNumber;
+  late String otpCode;
+  OtpScreen({super.key, required this.phoneNumber});
   Widget _buildIntroText() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,11 +26,11 @@ class OtpScreen extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 2),
           child: RichText(
             text: TextSpan(
-              text: 'Enter your 6 digits code numbers sent to ',
+              text: 'Enter your 6 digits code numbers sent to \n',
               style: TextStyle(color: Colors.black, height: 1.4, fontSize: 18),
               children: <TextSpan>[
                 TextSpan(
-                  text: ' phoneNumber',
+                  text: phoneNumber,
                   style: TextStyle(color: Colors.blue),
                 ),
               ],
@@ -54,7 +58,7 @@ class OtpScreen extends StatelessWidget {
         blinkWhenObscuring: true,
         animationType: AnimationType.scale,
         validator: (v) {
-          if (v!.length < 3) {
+          if (v!.length < 6) {
             return "I'm from validator";
           } else {
             return null;
@@ -86,7 +90,7 @@ class OtpScreen extends StatelessWidget {
           ),
         ],
         onCompleted: (code) {
-          // otpCode = code;
+          otpCode = code;
           debugPrint("Completed");
         },
         // onTap: () {
@@ -112,7 +116,10 @@ class OtpScreen extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomRight,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          _showProgressIndicator(context);
+          _login(context);
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.black,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -123,6 +130,53 @@ class OtpScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildPhoneNumberVerificationBloc() {
+    // I dont need bloc builder here i will navigate from screen to another only
+    return BlocListener<PhoneAuthCubit, PhoneAuthState>(
+      listenWhen: (previous, current) => previous != current,
+      listener: (ctx, state) {
+        if (state is Loading) {
+          _showProgressIndicator(ctx);
+        } else if (state is PhoneNumberSubmitted) {
+          Navigator.pop(ctx);
+          Navigator.of(ctx).pushReplacementNamed(mapScreen);
+        } else if (state is ErrorOccured) {
+          Navigator.pop(ctx);
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.black,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      child: Container(),
+    );
+  }
+
+  void _showProgressIndicator(BuildContext context) {
+    AlertDialog alertDialog = AlertDialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+        ),
+      ),
+    );
+    showDialog(
+      context: context,
+      builder: (context) => alertDialog,
+      barrierColor: Colors.white.withOpacity(0),
+      barrierDismissible: false,
+    );
+  }
+  
+  Future<void> _login(BuildContext context) async {
+    BlocProvider.of<PhoneAuthCubit>(context).submitOTP(otpCode);
   }
 
   @override
@@ -140,6 +194,7 @@ class OtpScreen extends StatelessWidget {
               _buildPinCodeFields(context),
               SizedBox(height: 60),
               _buildVerifyButton(context),
+              _buildPhoneNumberVerificationBloc(),
             ],
           ),
         ),
