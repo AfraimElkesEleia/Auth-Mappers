@@ -1,4 +1,5 @@
 import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_cubit.dart';
+import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_supabase_cubit.dart';
 import 'package:auth_mappers/constants/colors.dart';
 import 'package:auth_mappers/constants/routes.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +93,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildPhoneNumberSubmittedBloc() {
     // I dont need bloc builder here i will navigate from screen to another only
-    return BlocListener<PhoneAuthCubit, PhoneAuthState>(
+    return BlocListener<PhoneAuthSupabaseCubit, PhoneAuthState>(
       listenWhen: (previous, current) => previous != current,
       listener: (ctx, state) {
         if (state is Loading) {
@@ -139,7 +140,7 @@ class HomeScreen extends StatelessWidget {
       return;
     } else {
       _phoneKey.currentState!.save();
-      BlocProvider.of<PhoneAuthCubit>(context).submitPhoneNumber(phoneNumber);
+      BlocProvider.of<PhoneAuthSupabaseCubit>(context).submitPhoneNumber(phoneNumber);
     }
   }
 

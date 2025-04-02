@@ -1,4 +1,5 @@
 import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_cubit.dart';
+import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_supabase_cubit.dart';
 import 'package:auth_mappers/constants/colors.dart';
 import 'package:auth_mappers/constants/routes.dart';
 import 'package:flutter/material.dart';
@@ -117,7 +118,6 @@ class OtpScreen extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: ElevatedButton(
         onPressed: () {
-          _showProgressIndicator(context);
           _login(context);
         },
         style: ElevatedButton.styleFrom(
@@ -176,7 +176,7 @@ class OtpScreen extends StatelessWidget {
   }
   
   Future<void> _login(BuildContext context) async {
-    BlocProvider.of<PhoneAuthCubit>(context).submitOTP(otpCode);
+    BlocProvider.of<PhoneAuthSupabaseCubit>(context).signIn(phoneNumber,otpCode);
   }
 
   @override

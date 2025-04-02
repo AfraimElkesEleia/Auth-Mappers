@@ -1,10 +1,11 @@
 import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_cubit.dart';
+import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_supabase_cubit.dart';
 import 'package:auth_mappers/constants/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MapScreen extends StatelessWidget {
-  PhoneAuthCubit phoneAuthCubit = PhoneAuthCubit();
+  PhoneAuthSupabaseCubit phoneAuthCubit = PhoneAuthSupabaseCubit();
   MapScreen({super.key});
 
   @override
