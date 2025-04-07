@@ -1,6 +1,6 @@
 import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_cubit.dart';
 import 'package:auth_mappers/constants/colors.dart';
-import 'package:auth_mappers/constants/routes.dart';
+import 'package:auth_mappers/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';

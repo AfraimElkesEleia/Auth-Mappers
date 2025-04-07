@@ -1,8 +1,9 @@
 import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_cubit.dart';
 import 'package:auth_mappers/constants/colors.dart';
-import 'package:auth_mappers/constants/routes.dart';
+import 'package:auth_mappers/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 class HomeScreen extends StatelessWidget {
   final GlobalKey<FormState> _phoneKey = GlobalKey<FormState>();
   late String phoneNumber = '';
@@ -109,6 +110,9 @@ class HomeScreen extends StatelessWidget {
               duration: Duration(seconds: 3),
             ),
           );
+        } else if (state is GoogleAuthCompleted) {
+          Navigator.pop(ctx);
+          Navigator.of(ctx).pushNamedAndRemoveUntil(mapScreen,(route)=>false);
         }
       },
       child: Container(),
@@ -141,6 +145,10 @@ class HomeScreen extends StatelessWidget {
       _phoneKey.currentState!.save();
       BlocProvider.of<PhoneAuthCubit>(context).submitPhoneNumber(phoneNumber);
     }
+  }
+
+  Future<void> _loginGoogle(BuildContext context) async {
+    BlocProvider.of<PhoneAuthCubit>(context).signInWithGoogle();
   }
 
   Widget _buildNextButton(BuildContext context) {
@@ -181,6 +189,12 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: 70),
                 _buildNextButton(context),
                 _buildPhoneNumberSubmittedBloc(),
+                ElevatedButton(
+                  onPressed: () {
+                    _loginGoogle(context);
+                  },
+                  child: Text('Google'),
+                ),
               ],
             ),
           ),

@@ -17,3 +17,5 @@ final class PhoneNumberSubmitted extends PhoneAuthState {}
 
 // state when user submit the code that is arrived on his phone
 final class PhoneOTPVerified extends PhoneAuthState {}
+
+final class GoogleAuthCompleted extends PhoneAuthState{}

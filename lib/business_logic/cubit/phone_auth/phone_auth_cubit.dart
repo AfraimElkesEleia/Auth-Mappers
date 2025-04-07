@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 part 'phone_auth_state.dart';
 
 class PhoneAuthCubit extends Cubit<PhoneAuthState> {
@@ -59,4 +60,26 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
   User getLoggedinUser(){
     return FirebaseAuth.instance.currentUser!;
   }
+  Future<void> signInWithGoogle() async {
+    emit(Loading());
+  // Trigger the authentication flow
+  try{
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+  // Obtain the auth details from the request
+  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+  // Create a new credential
+  final credential = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
+
+  // Once signed in, return the UserCredential
+  await FirebaseAuth.instance.signInWithCredential(credential);
+  emit(GoogleAuthCompleted());
+  }catch(e){
+    emit(ErrorOccured(message: e.toString()));
+  }
+}
 }
