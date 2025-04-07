@@ -112,7 +112,9 @@ class HomeScreen extends StatelessWidget {
           );
         } else if (state is GoogleAuthCompleted) {
           Navigator.pop(ctx);
-          Navigator.of(ctx).pushNamedAndRemoveUntil(mapScreen,(route)=>false);
+          Navigator.of(
+            ctx,
+          ).pushNamedAndRemoveUntil(mapScreen, (route) => false);
         }
       },
       child: Container(),
@@ -177,25 +179,27 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Form(
-          key: _phoneKey,
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 88, horizontal: 24),
-            child: Column(
-              children: [
-                _buildIntroText(),
-                SizedBox(height: 110),
-                _buildPhoneNumber(),
-                SizedBox(height: 70),
-                _buildNextButton(context),
-                _buildPhoneNumberSubmittedBloc(),
-                ElevatedButton(
-                  onPressed: () {
-                    _loginGoogle(context);
-                  },
-                  child: Text('Google'),
-                ),
-              ],
+        body: SingleChildScrollView(
+          child: Form(
+            key: _phoneKey,
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 88, horizontal: 24),
+              child: Column(
+                children: [
+                  _buildIntroText(),
+                  SizedBox(height: 110),
+                  _buildPhoneNumber(),
+                  SizedBox(height: 70),
+                  _buildNextButton(context),
+                  _buildPhoneNumberSubmittedBloc(),
+                  ElevatedButton(
+                    onPressed: () {
+                      _loginGoogle(context);
+                    },
+                    child: Text('Google'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

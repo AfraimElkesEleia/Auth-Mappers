@@ -117,7 +117,6 @@ class OtpScreen extends StatelessWidget {
       alignment: Alignment.bottomRight,
       child: ElevatedButton(
         onPressed: () {
-          _showProgressIndicator(context);
           _login(context);
         },
         style: ElevatedButton.styleFrom(
@@ -139,7 +138,7 @@ class OtpScreen extends StatelessWidget {
       listener: (ctx, state) {
         if (state is Loading) {
           _showProgressIndicator(ctx);
-        } else if (state is PhoneNumberSubmitted) {
+        } else if (state is PhoneOTPVerified ) {
           Navigator.pop(ctx);
           Navigator.of(ctx).pushReplacementNamed(mapScreen);
         } else if (state is ErrorOccured) {
@@ -174,7 +173,7 @@ class OtpScreen extends StatelessWidget {
       barrierDismissible: false,
     );
   }
-  
+
   Future<void> _login(BuildContext context) async {
     BlocProvider.of<PhoneAuthCubit>(context).submitOTP(otpCode);
   }
@@ -184,18 +183,20 @@ class OtpScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 32, vertical: 88),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildIntroText(),
-              SizedBox(height: 88),
-              _buildPinCodeFields(context),
-              SizedBox(height: 60),
-              _buildVerifyButton(context),
-              _buildPhoneNumberVerificationBloc(),
-            ],
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 32, vertical: 88),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildIntroText(),
+                SizedBox(height: 88),
+                _buildPinCodeFields(context),
+                SizedBox(height: 60),
+                _buildVerifyButton(context),
+                _buildPhoneNumberVerificationBloc(),
+              ],
+            ),
           ),
         ),
       ),

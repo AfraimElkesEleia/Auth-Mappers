@@ -20,66 +20,82 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
       verificationCompleted: phoneVerificationCompleted,
       verificationFailed: phoneVerificationFailed,
       codeSent: codeSent,
-      codeAutoRetrievalTimeout:codeAutoRetrievalTimeout,
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
     );
   }
-  Future<void> phoneVerificationCompleted(PhoneAuthCredential credential) async {
+
+  Future<void> phoneVerificationCompleted(
+    PhoneAuthCredential credential,
+  ) async {
     print('verfication is completed');
     await signIn(credential);
   }
-  void phoneVerificationFailed (FirebaseAuthException error) {
+
+  void phoneVerificationFailed(FirebaseAuthException error) {
     print('verificationFailed : ${error.message}');
     emit(ErrorOccured(message: error.message!));
   }
-  void codeSent(String verificationId , int? resendToken){
+
+  void codeSent(String verificationId, int? resendToken) {
     this.verificationId = verificationId;
     emit(PhoneNumberSubmitted());
   }
+
   void codeAutoRetrievalTimeout(String verificationId) {
     //Time needed of trying in phoneVerficationComplete automatic
-    // On Android devices which support automatic SMS code resolution, 
+    // On Android devices which support automatic SMS code resolution,
     //this handler will be called if the device has not automatically resolved an SMS message within a certain timeframe. Once the timeframe has passed, the device will no longer attempt to resolve any incoming messages.
     print('CodeAutoRetrivalTimeout');
   }
-  Future<void> submitOTP(String otp) async{
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otp);
+
+  Future<void> submitOTP(String otp) async {
+    emit(Loading());
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otp,
+    );
     await signIn(credential);
   }
-  Future<void> signIn(PhoneAuthCredential credential) async{
-    try{
+
+  Future<void> signIn(PhoneAuthCredential credential) async {
+    try {
       await FirebaseAuth.instance.signInWithCredential(credential);
       emit(PhoneOTPVerified());
-    }catch(e){
+    } catch (e) {
       print('Wrong OTP');
       emit(ErrorOccured(message: e.toString()));
     }
   }
-  Future<void> logout()async{
+
+  Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
   }
-  User getLoggedinUser(){
+
+  User getLoggedinUser() {
     return FirebaseAuth.instance.currentUser!;
   }
+
   Future<void> signInWithGoogle() async {
     emit(Loading());
-  // Trigger the authentication flow
-  try{
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    // Trigger the authentication flow
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-  // Obtain the auth details from the request
-  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
-  // Create a new credential
-  final credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth?.accessToken,
-    idToken: googleAuth?.idToken,
-  );
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
 
-  // Once signed in, return the UserCredential
-  await FirebaseAuth.instance.signInWithCredential(credential);
-  emit(GoogleAuthCompleted());
-  }catch(e){
-    emit(ErrorOccured(message: e.toString()));
+      // Once signed in, return the UserCredential
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      emit(GoogleAuthCompleted());
+    } catch (e) {
+      emit(ErrorOccured(message: e.toString()));
+    }
   }
-}
 }
