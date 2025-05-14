@@ -1,5 +1,8 @@
+import 'package:auth_mappers/business_logic/cubit/maps/maps_cubit.dart';
 import 'package:auth_mappers/business_logic/cubit/phone_auth/phone_auth_cubit.dart';
 import 'package:auth_mappers/constants/strings.dart';
+import 'package:auth_mappers/data/repository/map_repo.dart';
+import 'package:auth_mappers/data/web_services/places_web_services.dart';
 import 'package:auth_mappers/presentation/screens/home_screen.dart';
 import 'package:auth_mappers/presentation/screens/map_screen.dart';
 import 'package:auth_mappers/presentation/screens/otp_screen.dart';
@@ -14,7 +17,18 @@ class AppRouter {
   Route? generateRoutes(RouteSettings settings) {
     switch (settings.name) {
       case mapScreen:
-        return MaterialPageRoute(builder: (_) => MapScreen());
+        return MaterialPageRoute(
+          builder:
+              (_) => BlocProvider(
+                create:
+                    (context) => MapsCubit(
+                      mapRepository: MapRepository(
+                        placesWebServices: PlacesWebServices(),
+                      ),
+                    ),
+                child: MapScreen(),
+              ),
+        );
       case loginScreen:
         return MaterialPageRoute(
           builder:
@@ -24,7 +38,7 @@ class AppRouter {
               ),
         );
       case otpScreen:
-       final String phoneNumber = settings.arguments as String;
+        final String phoneNumber = settings.arguments as String;
         return MaterialPageRoute(
           builder:
               (_) => BlocProvider.value(

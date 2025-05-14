@@ -34,7 +34,7 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
-  //Second Way to HeDER
+  //Second Way to HeadR
   Widget _buildDrawerHeaderTwo() {
     return Column(
       children: [
